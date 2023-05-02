@@ -1,1 +1,2 @@
 # MultipleEntitySingleAuthenticationProvider
+# MultiEntitySessionAuth
