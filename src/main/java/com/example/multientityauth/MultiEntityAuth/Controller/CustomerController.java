@@ -51,6 +51,8 @@ public class CustomerController {
     @GetMapping("/getCustomerByUsername")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public Customer getCustomer(@RequestBody String username) {
+        String uname = SecurityContextHolder.getContext().getAuthentication().getName();
+//        log.info(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         return customerRepository.findByUsername(username);
     }
 

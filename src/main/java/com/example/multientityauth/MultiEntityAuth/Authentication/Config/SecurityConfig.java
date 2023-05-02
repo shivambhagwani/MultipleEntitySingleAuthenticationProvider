@@ -33,15 +33,16 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/api/customer/register", "/api/customer/authenticate").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .authorizeHttpRequests()
-                .antMatchers("/api/customer/getCustomerByUsername").authenticated()
+                .formLogin().defaultSuccessUrl("/home", true)
+                .loginPage("/authenticate")
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).sessionFixation().changeSessionId()
+                        .invalidSessionUrl("/logout?expired")
+                        .maximumSessions(2)
+                        .maxSessionsPreventsLogin(true))
+                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true));
 
         return http.build();
     }
